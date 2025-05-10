@@ -5,44 +5,47 @@ public class Funcionario {
     private int horasTrabalhadas;
     private double valorHora;
 
-    public static final double SALARIO_MINIMO = 1518.00;
-    public static final double TETO_SALARIAL = 100000.00;
+    private static final double SALARIO_MINIMO = 1518.00;
 
     public Funcionario(String nome, int horasTrabalhadas, double valorHora) {
+        validarHoras(horasTrabalhadas);
+        validarValorHora(valorHora);
+
+        double pagamento = horasTrabalhadas * valorHora;
+        if (pagamento < SALARIO_MINIMO || pagamento > 10000.00) {
+            throw new IllegalArgumentException("Pagamento deve estar entre R$1518,00 e R$10000,00.");
+        }
+
         this.nome = nome;
-        this.horasTrabalhadas = validaHorasTrabalhadas(horasTrabalhadas);
-        this.valorHora = validaValorHora(valorHora);
+        this.horasTrabalhadas = horasTrabalhadas;
+        this.valorHora = valorHora;
     }
 
-    private int validaHorasTrabalhadas(int horas) {
-        if (horas < 20 || horas > 40) {
-            throw new IllegalArgumentException("Horas trabalhadas devem estar entre 20 e 40.");
+    protected void validarHoras(int horas) {
+        if (horas < 20 || horas > 160) {
+            throw new IllegalArgumentException("Horas devem estar entre 20h e 160h mensais.");
         }
-        return horas;
     }
 
-    private double validaValorHora(double valor) {
-        double min = SALARIO_MINIMO * 0.04;
-        double max = SALARIO_MINIMO * 0.10;
-        if (valor < min || valor > max) {
-            throw new IllegalArgumentException("Valor por hora deve estar entre 4% e 10% do salário mínimo.");
+    protected void validarValorHora(double valor) {
+        if (valor < 15.18 || valor > 151.80) {
+            throw new IllegalArgumentException("Valor por hora deve estar entre 1% e 10% do salário mínimo.");
         }
-        return valor;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public int getHorasTrabalhadas() {
+        return horasTrabalhadas;
+    }
+
+    public double getValorHora() {
+        return valorHora;
     }
 
     public double calcularPagamento() {
-        double pagamento = valorHora * horasTrabalhadas;
-        if (pagamento < SALARIO_MINIMO || pagamento > TETO_SALARIAL) {
-            throw new IllegalArgumentException("Pagamento fora dos limites permitidos.");
-        }
-        return pagamento;
-    }
-
-    public void setHorasTrabalhadas(int horasTrabalhadas) {
-        this.horasTrabalhadas = validaHorasTrabalhadas(horasTrabalhadas);
-    }
-
-    public void setValorHora(double valorHora) {
-        this.valorHora = validaValorHora(valorHora);
+        return horasTrabalhadas * valorHora;
     }
 }
